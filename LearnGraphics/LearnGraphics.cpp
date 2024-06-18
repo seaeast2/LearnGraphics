@@ -1,6 +1,11 @@
 ﻿// LearnGraphics.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
 
+#include <imgui.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
+
+
 #include "framework.h"
 #include "LearnGraphics.h"
 
@@ -96,9 +101,15 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+   int width = 800, height = 480;
+
+   RECT wr = { 0, 0, width, height };
+
+   // 툴바 크기를 포함한 넓이로 RECT 의 크기를 재계산 해줌.
+   AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, 0, wr.right - wr.left, wr.bottom - wr.top, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
    {
@@ -107,6 +118,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
+
+   // IMGUI 생성
 
    return TRUE;
 }
@@ -142,6 +155,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
+    case WM_SIZE:
+        return 0;
+
+    /*
+    case WM_SYSCOMMAND:
+        if ((wParam & 0xfff0) == SC_KEYMENU) // ALT 키로 메뉴 비활성화
+            return 0;
+        break;
+    */
+
+    case WM_MOUSEMOVE:
+        break;
+
+    case WM_LBUTTONUP:
+        break;
+
+    case WM_RBUTTONUP:
+        break;
+
+    case WM_KEYDOWN:
+        break;
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
@@ -150,9 +186,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+
     case WM_DESTROY:
         PostQuitMessage(0);
-        break;
+        return 0;
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
