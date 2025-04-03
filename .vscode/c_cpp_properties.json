@@ -10,7 +10,8 @@
                 "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um",
                 "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\include",
                 "C:\\src\\vcpkg\\installed\\x64-windows\\include"
-            ],              "defines": [
+            ],              
+            "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
