@@ -20,7 +20,7 @@ WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
-ATOM                MyRegisterClass(HINSTANCE hInstance);
+ATOM                MyRegisterClass(HINSTANCE hInstance, WNDCLASSEXW& wcex);
 HWND                InitInstance(HINSTANCE, int, int, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
@@ -35,12 +35,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     const int width = 800, height = 480;
 
-    // TODO: 여기에 코드를 입력합니다.
+    WNDCLASSEXW wcex;
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_LEARNGRAPHICS, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
+    MyRegisterClass(hInstance, wcex);
 
     // 애플리케이션 초기화를 수행합니다:
     HWND hwnd = InitInstance(hInstance, nCmdShow, width, height);
@@ -54,20 +54,61 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // imgui 초기화
     IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    (void)io;
+    io.DisplaySize = ImVec2(width, height);
+    ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplDX11_Init(example->device, example->deviceContext);
+    ImGui_ImplWin32_Init(hwnd);
 
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LEARNGRAPHICS));
-    MSG msg;
+    MSG msg = {};
 
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    /*while (GetMessage(&msg, nullptr, 0, 0))
     {
         if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+    }*/
+
+    while (WM_QUIT != msg.message) {
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        } else {
+            // Start the Dear ImGui frame
+            // ImGui_ImplDX11_NewFrame();
+            // ImGui_ImplWin32_NewFrame();
+            // ImGui::NewFrame();
+            // ImGui::Begin("Scene Control");
+            // ImGui::End();
+            // ImGui::Render();
+
+            example->Update();
+            example->Render();
+
+            // ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+            // switch the back buffer and the front buffer
+            example->swapChain->Present(1, 0);
+        }
     }
+
+    // Cleanup
+    ImGui_ImplDX11_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+
+    example->Clean();
+    DestroyWindow(hwnd);
+    UnregisterClassW(wcex.lpszClassName, wcex.hInstance);
 
     return (int) msg.wParam;
 }
@@ -79,9 +120,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 //  용도: 창 클래스를 등록합니다.
 //
-ATOM MyRegisterClass(HINSTANCE hInstance)
+ATOM MyRegisterClass(HINSTANCE hInstance, WNDCLASSEXW& wcex)
 {
-    WNDCLASSEXW wcex;
+    
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
