@@ -1,13 +1,16 @@
 ﻿// LearnGraphics.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
-#include <iostream>
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 
+#include <iostream>
+#include <memory>
+#include <Windows.h>
 
 #include "framework.h"
 #include "LearnGraphics.h"
+#include "Example.h"
 
 #define MAX_LOADSTRING 100
 
@@ -18,7 +21,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름�
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int);
+HWND                InitInstance(HINSTANCE, int, int, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
@@ -30,6 +33,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    const int width = 800, height = 480;
+
     // TODO: 여기에 코드를 입력합니다.
 
     // 전역 문자열을 초기화합니다.
@@ -38,13 +43,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow))
+    HWND hwnd = InitInstance(hInstance, nCmdShow, width, height);
+    if (!hwnd)
     {
         return FALSE;
     }
 
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LEARNGRAPHICS));
+    // 예제 클래스의 인스턴스 생성
+    auto example = std::make_unique<hlab::Example>(hwnd, width, height);
 
+    // imgui 초기화
+    IMGUI_CHECKVERSION();
+
+
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LEARNGRAPHICS));
     MSG msg;
 
     // 기본 메시지 루프입니다:
@@ -98,10 +110,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //        이 함수를 통해 인스턴스 핸들을 전역 변수에 저장하고
 //        주 프로그램 창을 만든 다음 표시합니다.
 //
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
+HWND InitInstance(HINSTANCE hInstance, int nCmdShow, int width, int height)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
-   int width = 800, height = 480;
+   
 
    RECT wr = { 0, 0, width, height };
 
@@ -122,7 +134,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
         OutputDebugStringW(L"CreateWindowW failed: ");
         OutputDebugStringW(errorMessage);
         // 오류 처리 코드 (예: 메시지 박스 출력, 로그 기록 등)
-        return FALSE;
+        return NULL;
    }
 
    ShowWindow(hWnd, nCmdShow);
@@ -130,7 +142,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    // IMGUI 생성
 
-   return TRUE;
+   return hWnd;
 }
 
 //
