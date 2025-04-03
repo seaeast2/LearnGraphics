@@ -20,6 +20,7 @@
             "type": "shell",
             "command": "cl.exe",
             "args": [
+                "/MDd", // Debug : MDd, Release : MD
                 "/EHsc",
                 "/Zi",
                 "/Fe:${workspaceFolder}\\build\\${fileBasenameNoExtension}.exe",
@@ -31,7 +32,7 @@
                 "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um",
                 "/I", "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\include",
                 "/I", "C:\\src\\vcpkg\\installed\\x64-windows\\include",
-                "${file}", // 이건 이 위치에 있어야 함.
+                //"${file}", // 이건 이 위치에 있어야 함.
                 // 라이브러리 경로
                 "/link",
                 "/LIBPATH:C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\lib\\x64",
@@ -39,6 +40,9 @@
                 "/LIBPATH:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22621.0\\um\\x64",
                 "/LIBPATH:C:\\src\\vcpkg\\installed\\x64-windows\\lib",
                 "${workspaceFolder}\\LearnGraphics\\*.res", // 리소스 파일 경로
+                "imgui.lib",
+                "d3d11.lib", 
+                "d3dcompiler.lib ",
                 "User32.lib",
                 "Gdi32.lib",
                 "Comdlg32.lib",
@@ -54,7 +58,7 @@
             "problemMatcher": ["$msCompile"],
             "detail": "MSVC를 사용하여 C++ 파일을 빌드합니다."
         },
-        {
+        { // *.rc 리소스 컴파일
             "label": "compile-rc",
             "command": "rc.exe",
             "args": [
@@ -64,7 +68,7 @@
             ],
             "problemMatcher": "$msCompile"
         },
-        {
+        { // 빌드 파일 삭제
             "label": "C++ Clean (MSVC)",
             "type": "shell",
             "command": "cmd",
