@@ -1,28 +1,79 @@
 {
+    "version": "2.0.0",
     "tasks": [
         {
-            "type": "cppbuild",
-            "label": "C/C++: cl.exe 활성 파일 빌드",
+            "label": "Create Build Directory",
+            "type": "shell",
+            "command": "mkdir",
+            "args": [
+                "${workspaceFolder}\\build"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "C++ 빌드 (MSVC)",
+            "type": "shell",
             "command": "cl.exe",
             "args": [
-                "/Zi",
                 "/EHsc",
-                "/nologo",
-                "/Fe${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "${file}"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$msCompile"
+                "/Zi",
+                "/Fe:${workspaceFolder}\\build\\${fileBasenameNoExtension}.exe",
+                "/Fo:${workspaceFolder}\\build\\",  // 🔥 중간 생성 파일(.obj)을 build 폴더에 저장
+                "${workspaceFolder}\\LearnGraphics\\*.cpp", // 소스 파일 경로
+                // 헤더 파일 경로
+                "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\ucrt",
+                "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\shared",
+                "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um",
+                "/I", "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\include",
+                "/I", "C:\\src\\vcpkg\\installed\\x64-windows\\include",
+                "${file}", // 이건 이 위치에 있어야 함.
+                // 라이브러리 경로
+                "/link",
+                "/LIBPATH:C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\lib\\x64",
+                "/LIBPATH:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22621.0\\ucrt\\x64",
+                "/LIBPATH:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22621.0\\um\\x64",
+                "/LIBPATH:C:\\src\\vcpkg\\installed\\x64-windows\\lib",
+                "${workspaceFolder}\\LearnGraphics\\*.res", // 리소스 파일 경로
+                "User32.lib",
+                "Gdi32.lib",
+                "Comdlg32.lib",
+                "Shell32.lib"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "디버거에서 생성된 작업입니다."
+            "dependsOn" : [
+                "compile-rc"
+            ],
+            "problemMatcher": ["$msCompile"],
+            "detail": "MSVC를 사용하여 C++ 파일을 빌드합니다."
+        },
+        {
+            "label": "compile-rc",
+            "command": "rc.exe",
+            "args": [
+                "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\shared",
+                "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um",
+                "${workspaceFolder}\\LearnGraphics\\LearnGraphics.rc",
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "C++ Clean (MSVC)",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c", "del /S /Q ${workspaceFolder}\\build\\*.obj ${workspaceFolder}\\build\\*.exe ${workspaceFolder}\\build\\*.ilk ${workspaceFolder}\\build\\*.pdb"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
         }
-    ],
-    "version": "2.0.0"
+    ]
 }

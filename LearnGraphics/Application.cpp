@@ -1,4 +1,5 @@
 #include "Application.h"
+#include <Windows.h>
 
 Application::Application(HWND hwnd, int width, int height)
 {

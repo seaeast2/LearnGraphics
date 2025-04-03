@@ -1,29 +1,16 @@
 {
-    // IntelliSense를 사용하여 가능한 특성에 대해 알아보세요.
-    // 기존 특성에 대한 설명을 보려면 가리킵니다.
-    // 자세한 내용을 보려면 https://go.microsoft.com/fwlink/?linkid=830387을(를) 방문하세요.
-    "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "(Windows) 연결",
-            "type": "cppvsdbg",
-            "request": "attach",
-        },
-        {
-            "name": "C/C++: cl.exe 활성 파일 빌드 및 디버그",
+            "name": "(Windows) 시작",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "program": "${workspaceFolder}/build/LearnGraphics.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
-            "console": "integratedTerminal",
-            "existing": false,
-            "preLaunchTask": "C/C++: cl.exe 활성 파일 빌드",
-            "detail": "preLaunchTask: C/C++: cl.exe 활성 파일 빌드",
-            "taskDetail": "컴파일러: cl.exe",
-            "taskStatus": "Detected Task"
+            "console": "externalTerminal"
         }
     ]
 }

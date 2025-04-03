@@ -1,6 +1,6 @@
 ﻿// LearnGraphics.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
-
+#include <iostream>
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
@@ -113,7 +113,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    if (!hWnd)
    {
-      return FALSE;
+        DWORD error = GetLastError();
+        WCHAR errorMessage[256];
+        FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+            NULL, error, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+            errorMessage, sizeof(errorMessage) / sizeof(WCHAR), NULL);
+
+        OutputDebugStringW(L"CreateWindowW failed: ");
+        OutputDebugStringW(errorMessage);
+        // 오류 처리 코드 (예: 메시지 박스 출력, 로그 기록 등)
+        return FALSE;
    }
 
    ShowWindow(hWnd, nCmdShow);
