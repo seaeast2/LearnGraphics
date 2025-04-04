@@ -21,7 +21,7 @@ void Example::Update() {
 
     // 화면 지우기
     std::fill(pixels.begin(), pixels.end(),
-              glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)); // 검은 배경
+              glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); // 검은 배경
 
     // 렌더링
     rasterization.Render(pixels);

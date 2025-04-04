@@ -2,29 +2,75 @@
 {
     "version": "2.0.0",
     "tasks": [
-        {
-            "label": "Create Build Directory",
+        { // 디렉토리 생성. 이미 있으면 생성 무시
+            "label": "create-build-directory",
             "type": "shell",
-            "command": "mkdir",
+            "command": "powershell",
             "args": [
-                "${workspaceFolder}\\build"
-            ],
+                "-Command",
+                "if (!(Test-Path '${workspaceFolder}\\Debug')) { New-Item -ItemType Directory -Path '${workspaceFolder}\\Debug' }; if (!(Test-Path '${workspaceFolder}\\Release')) { New-Item -ItemType Directory -Path '${workspaceFolder}\\Release' }"
+                ],
             "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": false
-            }
+            },
+            "detail": "빌드 디렉토리를 생성합니다."
         },
-        {
-            "label": "C++ 빌드 (MSVC)",
+        { // C++ 디버그 빌드
+            "label": "C++ 빌드 Debug (MSVC)",
             "type": "shell",
             "command": "cl.exe",
             "args": [
                 "/MDd", // Debug : MDd, Release : MD
                 "/EHsc",
                 "/Zi",
-                "/Fe:${workspaceFolder}\\build\\${fileBasenameNoExtension}.exe",
-                "/Fo:${workspaceFolder}\\build\\",  // 🔥 중간 생성 파일(.obj)을 build 폴더에 저장
+                "/Fe:${workspaceFolder}\\Debug\\${fileBasenameNoExtension}.exe",
+                "/Fo:${workspaceFolder}\\Debug\\",  // 🔥 중간 생성 파일(.obj)을 Debug 폴더에 저장
+                "${workspaceFolder}\\LearnGraphics\\*.cpp", // 소스 파일 경로
+                // 헤더 파일 경로
+                "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\ucrt",
+                "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\shared",
+                "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um",
+                "/I", "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\include",
+                "/I", "C:\\src\\vcpkg\\installed\\x64-windows\\include",
+                //"${file}", // 이건 이 위치에 있어야 함.
+                // 라이브러리 경로
+                "/link",
+                "/LIBPATH:C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.43.34808\\lib\\x64",
+                "/LIBPATH:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22621.0\\ucrt\\x64",
+                "/LIBPATH:C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22621.0\\um\\x64",
+                "/LIBPATH:C:\\src\\vcpkg\\installed\\x64-windows\\debug\\lib",
+                "${workspaceFolder}\\LearnGraphics\\*.res", // 리소스 파일 경로
+                "imguid.lib",
+                "d3d11.lib", 
+                "d3dcompiler.lib ",
+                "User32.lib",
+                "Gdi32.lib",
+                "Comdlg32.lib",
+                "Shell32.lib"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true // Ctrl + Shift + B : 컴파일시 Debug, Release 선택 할 수 있도록 함
+            },
+            "dependsOn" : [
+                "create-build-directory",
+                "compile-rc"
+            ],
+            "problemMatcher": ["$msCompile"],
+            "detail": "MSVC를 사용하여 C++ 파일을 빌드합니다."
+        },
+        { // C++ 배포 빌드
+            "label": "C++ 빌드 Release (MSVC)",
+            "type": "shell",
+            "command": "cl.exe",
+            "args": [
+                "/MD", // Release : MD
+                "/EHsc",
+                "/Zi",
+                "/Fe:${workspaceFolder}\\Release\\${fileBasenameNoExtension}.exe",
+                "/Fo:${workspaceFolder}\\Release\\",  // 🔥 중간 생성 파일(.obj)을 build 폴더에 저장
                 "${workspaceFolder}\\LearnGraphics\\*.cpp", // 소스 파일 경로
                 // 헤더 파일 경로
                 "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\ucrt",
@@ -53,6 +99,7 @@
                 "isDefault": true
             },
             "dependsOn" : [
+                "create-build-directory",
                 "compile-rc"
             ],
             "problemMatcher": ["$msCompile"],
@@ -66,14 +113,18 @@
                 "/I", "C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.22621.0\\um",
                 "${workspaceFolder}\\LearnGraphics\\LearnGraphics.rc",
             ],
-            "problemMatcher": "$msCompile"
+            "problemMatcher": ["$msCompile"],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
         },
         { // 빌드 파일 삭제
-            "label": "C++ Clean (MSVC)",
+            "label": "솔류션 정리 (MSVC)",
             "type": "shell",
             "command": "cmd",
             "args": [
-                "/c", "del /S /Q ${workspaceFolder}\\build\\*.obj ${workspaceFolder}\\build\\*.exe ${workspaceFolder}\\build\\*.ilk ${workspaceFolder}\\build\\*.pdb"
+                "/c", "del /S /Q ${workspaceFolder}\\Debug\\*.* ${workspaceFolder}\\Release\\*.*",
             ],
             "group": {
                 "kind": "build",

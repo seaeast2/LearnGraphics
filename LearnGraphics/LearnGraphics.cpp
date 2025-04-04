@@ -181,8 +181,6 @@ HWND InitInstance(HINSTANCE hInstance, int nCmdShow, int width, int height)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-   // IMGUI 생성
-
    return hWnd;
 }
 
@@ -229,6 +227,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     */
 
     case WM_MOUSEMOVE:
+        std::cout << "Mouse " << LOWORD(lParam) << ", " << HIWORD(lParam) << std::endl;
         break;
 
     case WM_LBUTTONUP:
