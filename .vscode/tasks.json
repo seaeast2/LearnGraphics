@@ -25,7 +25,7 @@
                 "/MDd", // Debug : MDd, Release : MD
                 "/EHsc",
                 "/Zi",
-                "/Fe:${workspaceFolder}\\Debug\\${fileBasenameNoExtension}.exe",
+                "/Fe:${workspaceFolder}\\Debug\\LearnGraphics.exe", // 컴파일 결과물은 스튜디오에서 결정하도록 수정 요망
                 "/Fo:${workspaceFolder}\\Debug\\",  // 🔥 중간 생성 파일(.obj)을 Debug 폴더에 저장
                 "${workspaceFolder}\\LearnGraphics\\*.cpp", // 소스 파일 경로
                 // 헤더 파일 경로
@@ -43,6 +43,7 @@
                 "/LIBPATH:C:\\src\\vcpkg\\installed\\x64-windows\\debug\\lib",
                 "${workspaceFolder}\\LearnGraphics\\*.res", // 리소스 파일 경로
                 "imguid.lib",
+                "glm.lib",
                 "d3d11.lib", 
                 "d3dcompiler.lib ",
                 "User32.lib",
@@ -69,7 +70,7 @@
                 "/MD", // Release : MD
                 "/EHsc",
                 "/Zi",
-                "/Fe:${workspaceFolder}\\Release\\${fileBasenameNoExtension}.exe",
+                "/Fe:${workspaceFolder}\\Release\\LearnGraphics.exe",
                 "/Fo:${workspaceFolder}\\Release\\",  // 🔥 중간 생성 파일(.obj)을 build 폴더에 저장
                 "${workspaceFolder}\\LearnGraphics\\*.cpp", // 소스 파일 경로
                 // 헤더 파일 경로
@@ -87,6 +88,7 @@
                 "/LIBPATH:C:\\src\\vcpkg\\installed\\x64-windows\\lib",
                 "${workspaceFolder}\\LearnGraphics\\*.res", // 리소스 파일 경로
                 "imgui.lib",
+                "glm.lib",
                 "d3d11.lib", 
                 "d3dcompiler.lib ",
                 "User32.lib",
